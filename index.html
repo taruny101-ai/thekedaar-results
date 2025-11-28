@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thekedaar Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 280px;
+    }
+    .card h2 {
+      margin-top: 0;
+      color: #444;
+      text-align: center;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .result-table td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    .result-table tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Daily Game Results</h1>
+  <div class="container">
+    <div class="card"><h2>Game 1</h2><table class="result-table" id="game1-results"></table></div>
+    <div class="card"><h2>Game 2</h2><table class="result-table" id="game2-results"></table></div>
+    <div class="card"><h2>Game 3</h2><table class="result-table" id="game3-results"></table></div>
+    <div class="card"><h2>Game 4</h2><table class="result-table" id="game4-results"></table></div>
+    <div class="card"><h2>Game 5</h2><table class="result-table" id="game5-results"></table></div>
+    <div class="card"><h2>Game 6</h2><table class="result-table" id="game6-results"></table></div>
+    <div class="card"><h2>Game 7</h2><table class="result-table" id="game7-results"></table></div>
+  </div>
+
+  <script>
+    const sheetID = "2PACX-1vQnSHWXQOhpQaBWvI_B5a2GkrHQCev1-8DOB9g5rDFPvTYJFXytmcCFjCC1A7HQSnKmGGbxQ7wn08A6";
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
+
+    fetch(url)
+      .then(res => res.text())
+      .then(text => {
+        const data = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = data.table.rows;
+
+        rows.forEach(r => {
+          const game = r.c[0].v;   // Game name (Game1, Game2, etc.)
+          const date = r.c[1].v;   // Date
+          const result = r.c[2].v; // Result
+
+          const table = document.getElementById(`${game.toLowerCase()}-results`);
+          if (table) {
+            const rowHTML = `<tr><td>Date: ${date}</td><td>Result: ${result}</td></tr>`;
+            table.innerHTML = rowHTML;
+          }
+        });
+      });
+  </script>
+</body>
+</html>
